@@ -3,7 +3,7 @@ package com.darklycoder.viewnavigator.demo.pages.main
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
-import com.darklycoder.viewnavigator.ViewNavigator
+import com.darklycoder.viewnavigator.MultiViewNavigator
 import com.darklycoder.viewnavigator.annotation.Navigator
 import com.darklycoder.viewnavigator.demo.R
 import com.darklycoder.viewnavigator.demo.pages.Paths
@@ -18,9 +18,9 @@ class MainView(context: Context) : PageView(context) {
         bindContainerView(fl_container)
         setBackgroundColor(Color.WHITE)
 
-        btn_main1.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_MAIN01) }
+        btn_main1.setOnClickListener { MultiViewNavigator.instance.goto(Paths.PATH_MAIN01) }
 
-        btn_main2.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_MAIN02) }
+        btn_main2.setOnClickListener { MultiViewNavigator.instance.goto(Paths.PATH_MAIN02) }
     }
 
 }

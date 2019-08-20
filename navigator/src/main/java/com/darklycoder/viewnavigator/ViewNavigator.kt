@@ -9,18 +9,14 @@ import java.lang.ref.WeakReference
 
 /**
  * 视图导航器
+ *
+ * @param tag 对应 ViewNavigator
  */
-class ViewNavigator private constructor() {
+class ViewNavigator(private val tag: String = "") {
 
     // 入口界面
     private var mPageView: IPageView? = null
     private var mContext: WeakReference<Context>? = null
-
-    companion object {
-        val instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            ViewNavigator()
-        }
-    }
 
     /**
      * 初始化
