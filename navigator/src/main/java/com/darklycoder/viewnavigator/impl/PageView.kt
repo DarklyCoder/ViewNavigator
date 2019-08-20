@@ -1,10 +1,10 @@
 package com.darklycoder.viewnavigator.impl
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IntDef
 import com.darklycoder.viewnavigator.info.ViewIntent
 import com.darklycoder.viewnavigator.interfaces.IPageManager
 import com.darklycoder.viewnavigator.interfaces.IPageView
@@ -16,27 +16,44 @@ import com.darklycoder.viewnavigator.utils.VLog
  * 页面组件
  */
 open class PageView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), IPageView {
+
+    private var status = Status.UNKNOWN
+
+    @IntDef(Status.UNKNOWN, Status.SHOW, Status.HIDE, Status.REMOVE)
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class Status {
+        companion object {
+            private const val STATUS = 0x1
+            const val UNKNOWN = STATUS shl 1
+            const val SHOW = STATUS shl 2
+            const val HIDE = STATUS shl 3
+            const val REMOVE = STATUS shl 4
+        }
+    }
 
     init {
         isClickable = true
         isFocusable = true
-        setBackgroundColor(Color.WHITE)
     }
 
     // 存放子界面
     private var mContainerView: ViewGroup? = null
     // 存放 mContainerView 里显示的界面
-    private var mPages: LinkedHashMap<String, IPageView> = LinkedHashMap()
+    private var mPages: ArrayList<Pair<String, IPageView>> = ArrayList()
     // 管理子界面切换
     private var mPageManager: IPageManager? = null
 
     override fun bindContainerView(containerView: ViewGroup) {
         this.mContainerView = containerView
         bindPageManager(PageManager())
+    }
+
+    override fun getGroup(): String? {
+        return PagePathUtil.findGroup(this::class.java.name, null != mContainerView)
     }
 
     override fun getContainerView(): ViewGroup? {
@@ -53,19 +70,90 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun onShow(isInit: Boolean, params: IParams?) {
-        VLog.d("onShow: ${javaClass::class.java.simpleName}")
+        if (status != Status.SHOW) {
+            onShowFirst(isInit, params)
+        }
+        status = Status.SHOW
 
+        if (!isInit) {
+            getTopView()?.second?.onShow(false)
+        }
+    }
+
+    open fun onShowFirst(isInit: Boolean, params: IParams?) {
+        VLog.d("onShow: ${javaClass.simpleName}")
     }
 
     override fun onHide() {
-        VLog.d("onHide: ${javaClass::class.java.simpleName}")
-        // TODO 最上层同步隐藏
+        status = Status.HIDE
+        VLog.d("onHide: ${javaClass.simpleName}")
+        getTopView()?.second?.onHide()
     }
 
     override fun onRemove() {
+        status = Status.REMOVE
         // 清空子界面
         VLog.d("onRemove: ${javaClass.simpleName}")
         clear()
+    }
+
+    /**
+     * 处理返回事件，返回 true 表示事件已消费
+     */
+    override fun back(): Boolean {
+        if (mPages.isNullOrEmpty()) {
+            return false
+        }
+
+        val last = mPages.last()
+        if (last.second.back()) {
+            return true
+        }
+
+        closeItem(last)
+
+        return true
+    }
+
+    /**
+     * 关闭指定界面
+     */
+    override fun finishByKey(key: String): Boolean {
+        if (mPages.isNullOrEmpty()) {
+            return false
+        }
+
+        mPages.forEach {
+            if (key == it.first) {
+                closeItem(it)
+                return true
+
+            } else {
+                if (it.second.finishByKey(key)) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun closeItem(item: Pair<String, IPageView>) {
+        try {
+            val pageView = item.second
+
+            if (pageView is PageView) {
+                VLog.d("closeItem: ${javaClass.simpleName} -> ${pageView::class.java.simpleName}")
+
+                pageView.onRemove()
+                mPages.remove(item)
+                getContainerView()?.removeView(pageView)
+            }
+
+        } catch (e: Exception) {
+            VLog.e(e)
+        }
+
     }
 
     override fun getTopView(): Pair<String, IPageView?>? {
@@ -73,16 +161,15 @@ open class PageView @JvmOverloads constructor(
             return null
         }
 
-        val key = mPages.keys.last()
-        return Pair(key, mPages[key])
+        return mPages.last()
     }
 
     override fun contain(intent: ViewIntent): Boolean {
-        return null != mPages[intent.path]
+        return null != findPageByPath(intent.path)
     }
 
     override fun isTop(intent: ViewIntent): Boolean {
-        return contain(intent) && mPages.keys.last() == intent.path
+        return contain(intent) && mPages.last().first == intent.path
     }
 
     override fun moveTop(intent: ViewIntent) {
@@ -99,9 +186,10 @@ open class PageView @JvmOverloads constructor(
         }
 
         // 移到栈顶
-        val pageView = mPages[intent.path] ?: return
-        mPages.remove(intent.path)
-        mPages[intent.path] = pageView
+        val item = findPageByPath(intent.path) ?: return
+        mPages.remove(item)
+        mPages.add(item)
+        val pageView = item.second
 
         if (pageView is PageView) {
             pageView.bringToFront()
@@ -118,48 +206,77 @@ open class PageView @JvmOverloads constructor(
 
         val pageView = PagePathUtil.getPageView(context, intent.path) ?: return
         val topView = getTopView()
-        mPages[intent.path] = pageView
+        mPages.add(Pair(intent.path, pageView))
 
         try {
             // TODO 动画处理
             topView?.second?.onHide()
             getContainerView()?.addView(pageView)
-            pageView.onShow(true, intent.params)
+            VLog.d("addPage: ${javaClass.simpleName} -> ${pageView::class.java.simpleName}")
 
-            VLog.d("addPage: ${pageView::class.java.simpleName}")
+            pageView.onShow(true, intent.params)
 
         } catch (e: Exception) {
             VLog.e(e)
         }
     }
 
+    /**
+     * 跳转子界面
+     */
+    override fun goto(gotoGroup: String, intent: ViewIntent) {
+        mPages.forEach {
+            if (gotoGroup.contains(it.first)) {
+                it.second.getPageManager()?.goto(intent)
+            }
+        }
+    }
+
+    /**
+     * 清除所有子界面
+     */
     private fun clear() {
-        mPages.values.forEach { it.onRemove() }
-        mPages.clear()
-        getContainerView()?.removeAllViews()
+        try {
+            mPages.forEach { it.second.onRemove() }
+            mPages.clear()
+            getContainerView()?.removeAllViews()
+
+        } catch (e: Exception) {
+            VLog.e(e)
+        }
     }
 
     private fun clearByPath(path: String) {
         var findIndex = -1
-        val delList = ArrayList<String>()
-        mPages.keys.reversed().forEachIndexed { index, key ->
-            if (key == path) {
+        val delList = ArrayList<Pair<String, IPageView>>()
+        mPages.reversed().forEachIndexed { index, item ->
+            if (item.first == path) {
                 findIndex = index
             }
 
             if (findIndex != -1 && findIndex != index) {
-                delList.add(key)
+                delList.add(item)
             }
         }
 
         delList.forEach {
-            val pageView = mPages[it]
-            pageView?.onRemove()
-            mPages.remove(it)
+            val pageView = it.second
             if (pageView is PageView) {
+                pageView.onRemove()
+                mPages.remove(it)
                 getContainerView()?.removeView(pageView)
             }
         }
+    }
+
+    private fun findPageByPath(path: String): Pair<String, IPageView>? {
+        mPages.reversed().forEach {
+            if (it.first == path) {
+                return it
+            }
+        }
+
+        return null
     }
 
 }

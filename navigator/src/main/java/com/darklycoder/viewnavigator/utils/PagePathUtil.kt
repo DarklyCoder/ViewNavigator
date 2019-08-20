@@ -32,7 +32,7 @@ class PagePathUtil private constructor() {
             }
         }
 
-        private fun getGroup(path: String): String {
+        fun getGroup(path: String): String {
             val index = path.lastIndexOf("/")
             if (index == -1) {
                 return path
@@ -70,6 +70,22 @@ class PagePathUtil private constructor() {
             }
 
             return null
+        }
+
+        fun findGroup(clsName: String, isGroup: Boolean): String? {
+            var group: String? = null
+
+            mPagePaths.entries.forEach {
+                it.value.forEach { item ->
+                    if (item.clsName == clsName) {
+                        group = if (isGroup) item.path else it.key
+                        return group
+                    }
+                }
+            }
+
+            return group
+
         }
     }
 

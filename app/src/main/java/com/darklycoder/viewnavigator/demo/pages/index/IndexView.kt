@@ -18,7 +18,8 @@ class IndexView(context: Context) : PageView(context) {
 
         btn_main.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_MAIN) }
         btn_about.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_ABOUT) }
-        btn_dialog.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_DIALOG) }
+        btn_close.setOnClickListener { ViewNavigator.instance.finish() }
+        btn_close_about.setOnClickListener { ViewNavigator.instance.finishByKey(Paths.PATH_ABOUT) }
     }
 
 }

@@ -1,7 +1,7 @@
 package com.darklycoder.viewnavigator.demo
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.darklycoder.viewnavigator.ViewNavigator
 import com.darklycoder.viewnavigator.ViewPaths
 import com.darklycoder.viewnavigator.demo.pages.InitView

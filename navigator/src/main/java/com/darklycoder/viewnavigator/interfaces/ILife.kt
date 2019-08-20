@@ -11,7 +11,7 @@ interface ILife {
      * @param isInit 是否是第一次可见
      * @param params 传递的参数
      */
-    fun onShow(isInit: Boolean = true, params: IParams? = null)
+    fun onShow(isInit: Boolean = false, params: IParams? = null)
 
     /**
      * 不可见

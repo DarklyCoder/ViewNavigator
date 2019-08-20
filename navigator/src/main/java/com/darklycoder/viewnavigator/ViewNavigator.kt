@@ -54,35 +54,46 @@ class ViewNavigator private constructor() {
      * 返回
      */
     fun back(): Boolean {
-        return mPageView?.getPageManager()?.onBack() ?: false
+        val ret = mPageView?.back() ?: false
+        if (ret) {
+            mPageView?.onShow()
+        }
+
+        return ret
     }
 
     /**
      * 根据key关闭指定界面
      */
     fun finishByKey(key: String) {
-        mPageView?.getPageManager()?.finishByKey(key)
+        val ret = mPageView?.finishByKey(key) ?: false
+        if (ret) {
+            mPageView?.onShow()
+        }
     }
 
     /**
      * 关闭所有界面
      */
     fun finish() {
-        mPageView?.getPageManager()?.finish()
+        mPageView?.onRemove()
+        mContext?.clear()
+        mPageView = null
+        mContext = null
     }
 
     /**
      * 显示
      */
     fun onShow() {
-        mPageView?.getPageManager()?.onShow()
+        mPageView?.onShow(false)
     }
 
     /**
      * 隐藏
      */
     fun onHide() {
-        mPageView?.getPageManager()?.onHide()
+        mPageView?.onHide()
     }
 
 }

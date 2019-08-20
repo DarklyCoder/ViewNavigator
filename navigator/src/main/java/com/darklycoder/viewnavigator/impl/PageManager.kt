@@ -3,6 +3,7 @@ package com.darklycoder.viewnavigator.impl
 import com.darklycoder.viewnavigator.info.ViewIntent
 import com.darklycoder.viewnavigator.interfaces.IPageManager
 import com.darklycoder.viewnavigator.interfaces.IPageView
+import com.darklycoder.viewnavigator.utils.PagePathUtil
 
 /**
  * 视图管理器
@@ -16,6 +17,19 @@ class PageManager : IPageManager {
     }
 
     override fun goto(intent: ViewIntent) {
+        val gotoGroup = PagePathUtil.getGroup(intent.path)
+        val curGroup = mPageView?.getGroup()
+        // 是同一组的
+        if (gotoGroup == curGroup) {
+            handleIntent(intent)
+            return
+        }
+
+        // 非同一组
+        mPageView?.goto(gotoGroup, intent)
+    }
+
+    private fun handleIntent(intent: ViewIntent) {
         // 判断如何跳转
         when {
             intent.launchMode == ViewIntent.StartMode.Standard -> {
@@ -43,23 +57,6 @@ class PageManager : IPageManager {
                 mPageView?.addPage(intent)
             }
         }
-    }
-
-    override fun onBack(): Boolean {
-        return false
-    }
-
-    override fun onShow() {
-    }
-
-    override fun onHide() {
-    }
-
-    override fun finishByKey(key: String) {
-    }
-
-    override fun finish() {
-        mPageView?.onRemove()
     }
 
 }

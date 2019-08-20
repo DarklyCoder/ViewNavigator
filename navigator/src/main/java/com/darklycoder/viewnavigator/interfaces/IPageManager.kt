@@ -17,28 +17,4 @@ interface IPageManager {
      */
     fun goto(intent: ViewIntent)
 
-    /**
-     * 回退
-     */
-    fun onBack(): Boolean
-
-    /**
-     * 显示
-     */
-    fun onShow()
-
-    /**
-     * 隐藏
-     */
-    fun onHide()
-
-    /**
-     * 根据key关闭指定界面
-     */
-    fun finishByKey(key: String)
-
-    /**
-     * 关闭
-     */
-    fun finish()
 }

@@ -1,6 +1,7 @@
 package com.darklycoder.viewnavigator.demo.pages.desc
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import com.darklycoder.viewnavigator.annotation.Navigator
 import com.darklycoder.viewnavigator.demo.R
@@ -12,5 +13,6 @@ class DescView(context: Context) : PageView(context) {
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_page_desc, this, true)
+        setBackgroundColor(Color.WHITE)
     }
 }

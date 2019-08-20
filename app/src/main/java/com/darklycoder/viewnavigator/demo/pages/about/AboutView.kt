@@ -1,6 +1,7 @@
 package com.darklycoder.viewnavigator.demo.pages.about
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import com.darklycoder.viewnavigator.ViewNavigator
 import com.darklycoder.viewnavigator.annotation.Navigator
@@ -14,6 +15,7 @@ class AboutView(context: Context) : PageView(context) {
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_page_about, this, true)
+        setBackgroundColor(Color.WHITE)
 
         btn_desc.setOnClickListener { ViewNavigator.instance.goto(Paths.PATH_DESC) }
     }
