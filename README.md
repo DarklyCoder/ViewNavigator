@@ -42,22 +42,23 @@
 3. 初始化
 
     ```
-    ViewNavigator.instance.init(mContext, initView, ViewPaths.getPaths())
+    MultiViewNavigator.instance.initPaths(ViewPaths.getPaths())
     ```
     
-    `ViewPaths` 编译后会自动生成
+    * `ViewPaths` 编译后会自动生成
     
 ## api
 
 | 操作  | 函数|
 |---|---|
-|  跳转 |ViewNavigator.instance.goto(Path) |
-|  跳转 |ViewNavigator.instance.goto(ViewIntent) |
-|  返回 |ViewNavigator.instance.goto(ViewIntent) |
-|  关闭指定界面 |ViewNavigator.instance.finishByKey(Path) |
-|  全部关闭 |ViewNavigator.instance.finish() |
-|  显示 |ViewNavigator.instance.onShow() |
-|  隐藏 |ViewNavigator.instance.onHide() |
+|  跳转 |MultiViewNavigator.instance.add(ViewNavigator) |
+|  跳转 |MultiViewNavigator.instance.goto(Path,TAG) |
+|  跳转 |MultiViewNavigator.instance.goto(ViewIntent,TAG) |
+|  返回 |MultiViewNavigator.instance.back(TAG) |
+|  关闭指定界面 |MultiViewNavigator.instance.finishByKey(Path,TAG) |
+|  全部关闭 |MultiViewNavigator.instance.finish(TAG) |
+|  显示 |MultiViewNavigator.instance.onShow(TAG) |
+|  隐藏 |MultiViewNavigator.instance.onHide(TAG) |
 
 ## Demo
 

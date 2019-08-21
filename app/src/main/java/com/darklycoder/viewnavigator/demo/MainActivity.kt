@@ -16,9 +16,13 @@ class MainActivity : AppCompatActivity() {
         val initView = InitView(this)
         setContentView(initView)
 
-        MultiViewNavigator.instance.add(ViewNavigator())
+        // 初始化路径
+        MultiViewNavigator.instance.initPaths(ViewPaths.getPaths())
 
-        MultiViewNavigator.instance.init(this, initView, ViewPaths.getPaths())
+        // 添加导航器
+        MultiViewNavigator.instance.add(ViewNavigator(this, initView))
+
+        // 跳转界面
         MultiViewNavigator.instance.goto(Paths.PATH_INDEX)
     }
 

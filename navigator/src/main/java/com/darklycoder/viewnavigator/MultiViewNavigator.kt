@@ -1,9 +1,8 @@
 package com.darklycoder.viewnavigator
 
-import android.content.Context
 import com.darklycoder.viewnavigator.info.NavigatorInfo
 import com.darklycoder.viewnavigator.info.ViewIntent
-import com.darklycoder.viewnavigator.interfaces.IPageView
+import com.darklycoder.viewnavigator.utils.PagePathUtil
 import java.util.*
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
@@ -23,12 +22,12 @@ class MultiViewNavigator {
         const val DEFAULT_TAG = "tag"
     }
 
-    fun add(navigator: ViewNavigator, tag: String = DEFAULT_TAG) {
-        mViewNavigator[tag] = navigator
+    fun initPaths(paths: ArrayList<NavigatorInfo>) {
+        PagePathUtil.init(paths)
     }
 
-    fun init(context: Context, pageView: IPageView, paths: ArrayList<NavigatorInfo>, tag: String = DEFAULT_TAG) {
-        mViewNavigator[tag]?.init(context, pageView, paths)
+    fun add(navigator: ViewNavigator, tag: String = DEFAULT_TAG) {
+        mViewNavigator[tag] = navigator
     }
 
     fun goto(pathIndex: String, tag: String = DEFAULT_TAG) {

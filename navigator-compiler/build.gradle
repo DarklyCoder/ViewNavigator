@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.novoda.bintray-release'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -12,3 +13,12 @@ dependencies {
 
 sourceCompatibility = "8"
 targetCompatibility = "8"
+
+publish {
+    userOrg = 'darklycoder'
+    groupId = 'com.darklycoder.lib'
+    artifactId = 'ViewNavigator-Compiler'
+    publishVersion = '1.0.0'
+    desc = 'ViewNavigator-Compiler'
+    website = 'https://github.com/DarklyCoder/ViewNavigator.git'
+}

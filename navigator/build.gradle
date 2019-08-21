@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.novoda.bintray-release'
+
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.0"
@@ -35,4 +37,13 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     implementation project(path: ':navigator-compiler')
+}
+
+publish {
+    userOrg = 'darklycoder'
+    groupId = 'com.darklycoder.lib'
+    artifactId = 'ViewNavigator'
+    publishVersion = '1.0.0'
+    desc = 'ViewNavigator'
+    website = 'https://github.com/DarklyCoder/ViewNavigator.git'
 }

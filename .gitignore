@@ -13,3 +13,5 @@
 .externalNativeBuild
 .idea/
 outputs/
+package.*
+
