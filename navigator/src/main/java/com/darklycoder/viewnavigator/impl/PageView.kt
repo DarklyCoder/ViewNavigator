@@ -4,7 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.IntDef
+import com.darklycoder.viewnavigator.enums.Flags
+import com.darklycoder.viewnavigator.enums.PageStatus
 import com.darklycoder.viewnavigator.info.ViewIntent
 import com.darklycoder.viewnavigator.interfaces.IPageManager
 import com.darklycoder.viewnavigator.interfaces.IPageView
@@ -16,24 +17,12 @@ import com.darklycoder.viewnavigator.utils.VLog
  * 页面组件
  */
 open class PageView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), IPageView {
 
-    private var status = Status.UNKNOWN
-
-    @IntDef(Status.UNKNOWN, Status.SHOW, Status.HIDE, Status.REMOVE)
-    @Retention(AnnotationRetention.SOURCE)
-    annotation class Status {
-        companion object {
-            private const val STATUS = 0x1
-            const val UNKNOWN = STATUS shl 1
-            const val SHOW = STATUS shl 2
-            const val HIDE = STATUS shl 3
-            const val REMOVE = STATUS shl 4
-        }
-    }
+    private var status = PageStatus.UNKNOWN
 
     init {
         isClickable = true
@@ -70,28 +59,28 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun onShow(isInit: Boolean, params: IParams?) {
-        if (status != Status.SHOW) {
-            onShowFirst(isInit, params)
+        if (status != PageStatus.SHOW) {
+            onOriginShow(isInit, params)
         }
-        status = Status.SHOW
+        status = PageStatus.SHOW
 
         if (!isInit) {
             getTopView()?.second?.onShow(false)
         }
     }
 
-    open fun onShowFirst(isInit: Boolean, params: IParams?) {
+    open fun onOriginShow(isInit: Boolean, params: IParams?) {
         VLog.d("onShow: ${javaClass.simpleName}")
     }
 
     override fun onHide() {
-        status = Status.HIDE
+        status = PageStatus.HIDE
         VLog.d("onHide: ${javaClass.simpleName}")
         getTopView()?.second?.onHide()
     }
 
     override fun onRemove() {
-        status = Status.REMOVE
+        status = PageStatus.REMOVE
         // 清空子界面
         VLog.d("onRemove: ${javaClass.simpleName}")
         clear()
@@ -123,7 +112,7 @@ open class PageView @JvmOverloads constructor(
             return false
         }
 
-        mPages.forEach {
+        mPages.reversed().forEach {
             if (key == it.first) {
                 closeItem(it)
                 return true
@@ -173,7 +162,7 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun moveTop(intent: ViewIntent) {
-        if (intent.flag == ViewIntent.Flags.FLAG_CLEAR) {
+        if (intent.flag == Flags.FLAG_CLEAR) {
             // 清除当前操作界面的以外界面
             clearByPath(intent.path)
         }
@@ -200,7 +189,7 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun addPage(intent: ViewIntent) {
-        if (intent.flag == ViewIntent.Flags.FLAG_CLEAR) {
+        if (intent.flag == Flags.FLAG_CLEAR) {
             clear()
         }
 
@@ -250,7 +239,7 @@ open class PageView @JvmOverloads constructor(
         var findIndex = -1
         val delList = ArrayList<Pair<String, IPageView>>()
         mPages.reversed().forEachIndexed { index, item ->
-            if (item.first == path) {
+            if (findIndex == -1 && item.first == path) {
                 findIndex = index
             }
 

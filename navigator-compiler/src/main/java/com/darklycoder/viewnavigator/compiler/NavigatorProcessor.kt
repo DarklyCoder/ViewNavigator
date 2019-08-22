@@ -28,7 +28,10 @@ class NavigatorProcessor : AbstractProcessor() {
         return sets
     }
 
-    override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
+    override fun process(
+        annotations: MutableSet<out TypeElement>?,
+        roundEnv: RoundEnvironment?
+    ): Boolean {
         val set = roundEnv?.getElementsAnnotatedWith(Navigator::class.java)
         if (null == annotations || annotations.isEmpty() || null == set || set.isEmpty()) {
             return false
@@ -40,9 +43,10 @@ class NavigatorProcessor : AbstractProcessor() {
             if (it.kind == ElementKind.CLASS) {
                 val navigator = it.getAnnotation(Navigator::class.java)
                 val path = navigator.path
+                val mode = navigator.startMode
                 val clsName = (it as TypeElement).qualifiedName.toString()
 
-                list.add(NavigatorInfo(path, clsName))
+                list.add(NavigatorInfo(path, clsName, mode))
             }
         }
 
@@ -63,27 +67,32 @@ class NavigatorProcessor : AbstractProcessor() {
         val listType = array.parameterizedBy(navigatorInfo)
 
         val builder = FunSpec.builder("getPaths")
-                .returns(listType)
-                .addStatement("val list = %T()", listType)
+            .returns(listType)
+            .addStatement("val list = %T()", listType)
 
         list.forEach {
-            builder.addStatement("list.add( %T(%S, %S) )", NavigatorInfo::class, it.path, it.clsName)
+            builder.addStatement(
+                "list.add( %T(%S, %S, ${it.startMode}) )",
+                NavigatorInfo::class,
+                it.path,
+                it.clsName
+            )
         }
 
         val getPathMap = builder.addStatement("return list").build()
 
         val companion = TypeSpec.companionObjectBuilder()
-                .addFunction(getPathMap)
-                .build()
+            .addFunction(getPathMap)
+            .build()
 
         val file = FileSpec
-                .builder(pkgName, clsName)
-                .addType(
-                        TypeSpec.classBuilder("ViewPaths")
-                                .addType(companion)
-                                .build()
-                )
-                .build()
+            .builder(pkgName, clsName)
+            .addType(
+                TypeSpec.classBuilder("ViewPaths")
+                    .addType(companion)
+                    .build()
+            )
+            .build()
 
         file.writeTo(processingEnv.filer)
     }

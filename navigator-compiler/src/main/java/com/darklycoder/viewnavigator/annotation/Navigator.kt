@@ -8,5 +8,6 @@ package com.darklycoder.viewnavigator.annotation
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Navigator(
-        val path: String
+    val path: String,
+    val startMode: Int = 0
 )

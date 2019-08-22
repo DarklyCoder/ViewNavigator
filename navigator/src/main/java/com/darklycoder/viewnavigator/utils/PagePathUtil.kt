@@ -41,7 +41,7 @@ class PagePathUtil private constructor() {
             return path.substring(0, index)
         }
 
-        private fun getClsName(path: String): String? {
+        fun getNavigatorInfo(path: String): NavigatorInfo? {
             val groupName = getGroup(path)
             val list = mPagePaths[groupName]
             if (list.isNullOrEmpty()) {
@@ -53,12 +53,12 @@ class PagePathUtil private constructor() {
                 return null
             }
 
-            return ll.first().clsName
+            return ll.first()
         }
 
         fun getPageView(context: Context, path: String): PageView? {
             try {
-                val clsName = getClsName(path) ?: return null
+                val clsName = getNavigatorInfo(path)?.clsName ?: return null
 
                 val cls = Class.forName(clsName)
                 val constructor = cls.getConstructor(Context::class.java)
@@ -85,7 +85,6 @@ class PagePathUtil private constructor() {
             }
 
             return group
-
         }
     }
 
