@@ -42,7 +42,7 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun getGroup(): String? {
-        return PagePathUtil.findGroup(this::class.java.name, null != mContainerView)
+        return PagePathUtil.findGroup(javaClass.name, null != mContainerView)
     }
 
     override fun getContainerView(): ViewGroup? {
@@ -56,6 +56,16 @@ open class PageView @JvmOverloads constructor(
 
     override fun getPageManager(): IPageManager? {
         return mPageManager
+    }
+
+    override fun getDeep(): Int {
+        var deep = mPages.size
+
+        mPages.forEach {
+            deep += it.second.getDeep()
+        }
+
+        return deep
     }
 
     override fun onShow(isInit: Boolean, params: IParams?) {
@@ -94,14 +104,17 @@ open class PageView @JvmOverloads constructor(
             return false
         }
 
+        handleBack()
+        return true
+    }
+
+    private fun handleBack() {
         val last = mPages.last()
         if (last.second.back()) {
-            return true
+            return
         }
 
         closeItem(last)
-
-        return true
     }
 
     /**
@@ -214,7 +227,7 @@ open class PageView @JvmOverloads constructor(
      * 跳转子界面
      */
     override fun goto(gotoGroup: String, intent: ViewIntent) {
-        mPages.forEach {
+        mPages.reversed().forEach {
             if (gotoGroup.contains(it.first)) {
                 it.second.getPageManager()?.goto(intent)
             }

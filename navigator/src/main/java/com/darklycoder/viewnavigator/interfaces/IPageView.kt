@@ -9,7 +9,7 @@ import com.darklycoder.viewnavigator.info.ViewIntent
 interface IPageView : ILife {
 
     /**
-     * 绑定子容器视图¬
+     * 绑定子容器视图
      */
     fun bindContainerView(containerView: ViewGroup)
 
@@ -32,6 +32,11 @@ interface IPageView : ILife {
      * 获取界面管理器
      */
     fun getPageManager(): IPageManager?
+
+    /**
+     * 获取视图层级
+     */
+    fun getDeep(): Int
 
     /**
      * 返回

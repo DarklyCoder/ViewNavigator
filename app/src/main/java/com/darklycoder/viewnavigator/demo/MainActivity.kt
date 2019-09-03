@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val result = MultiViewNavigator.instance.back()
+        val result = MultiViewNavigator.instance.back(2)
         if (!result) {
             super.onBackPressed()
         }

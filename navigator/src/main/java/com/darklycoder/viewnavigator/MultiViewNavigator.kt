@@ -38,8 +38,8 @@ class MultiViewNavigator {
         mViewNavigator[tag]?.goto(intent)
     }
 
-    fun back(tag: String = DEFAULT_TAG): Boolean {
-        return mViewNavigator[tag]?.back() ?: false
+    fun back(minDeep: Int = 2, tag: String = DEFAULT_TAG): Boolean {
+        return mViewNavigator[tag]?.back(minDeep) ?: false
     }
 
     fun onShow(tag: String = DEFAULT_TAG) {
@@ -50,8 +50,8 @@ class MultiViewNavigator {
         mViewNavigator[tag]?.onHide()
     }
 
-    fun finishByKey(key: String, tag: String = DEFAULT_TAG) {
-        mViewNavigator[tag]?.finishByKey(key)
+    fun finishByKey(vararg keys: String, tag: String = DEFAULT_TAG) {
+        mViewNavigator[tag]?.finishByKey(*keys)
     }
 
     fun finish(tag: String = DEFAULT_TAG) {

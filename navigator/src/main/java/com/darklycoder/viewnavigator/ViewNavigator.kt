@@ -36,7 +36,12 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
     /**
      * 返回
      */
-    fun back(): Boolean {
+    fun back(minDeep: Int = 2): Boolean {
+        val deep = (pageView?.getDeep() ?: 0) + 1
+        if (deep <= minDeep) {
+            return false
+        }
+
         val ret = pageView?.back() ?: false
         if (ret) {
             pageView?.onShow()
@@ -48,11 +53,10 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
     /**
      * 根据key关闭指定界面
      */
-    fun finishByKey(key: String) {
-        val ret = pageView?.finishByKey(key) ?: false
-        if (ret) {
-            pageView?.onShow()
-        }
+    fun finishByKey(vararg keys: String) {
+        keys.forEach { pageView?.finishByKey(it) }
+
+        pageView?.onShow()
     }
 
     /**
