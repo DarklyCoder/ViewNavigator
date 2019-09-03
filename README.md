@@ -15,9 +15,9 @@
 1. 在 build.gradle 中 添加如下内容：
 
     ``` shell
-    implementation 'com.darklycoder.lib:ViewNavigator:1.0.0'
-    implementation 'com.darklycoder.lib:ViewNavigator-compiler:1.0.0'
-    kapt 'com.darklycoder.lib:ViewNavigator-compiler:1.0.0'
+    implementation 'com.darklycoder.lib:ViewNavigator:1.0.2'
+    implementation 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
+    kapt 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
     ```
 
 2. 自定义界面
@@ -51,11 +51,11 @@
 
 | 操作  | 函数|
 |---|---|
-|  跳转 |MultiViewNavigator.instance.add(ViewNavigator) |
-|  跳转 |MultiViewNavigator.instance.goto(Path,TAG) |
-|  跳转 |MultiViewNavigator.instance.goto(ViewIntent,TAG) |
-|  返回 |MultiViewNavigator.instance.back(DEEP,TAG) |
-|  关闭指定界面 |MultiViewNavigator.instance.finishByKey(Path,TAG) |
+|  跳转 |MultiViewNavigator.instance.add(ViewNavigator, TAG) |
+|  跳转 |MultiViewNavigator.instance.goto(Path, TAG) |
+|  跳转 |MultiViewNavigator.instance.goto(ViewIntent, TAG) |
+|  返回 |MultiViewNavigator.instance.back(DEEP, TAG) |
+|  关闭指定界面 |MultiViewNavigator.instance.finishByKey(Path, TAG) |
 |  全部关闭 |MultiViewNavigator.instance.finish(TAG) |
 |  显示 |MultiViewNavigator.instance.onShow(TAG) |
 |  隐藏 |MultiViewNavigator.instance.onHide(TAG) |
