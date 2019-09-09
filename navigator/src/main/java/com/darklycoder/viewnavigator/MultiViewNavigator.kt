@@ -10,17 +10,10 @@ import kotlin.collections.set
 /**
  * 多 ViewNavigator 管理，一个项目中可以有多个 ViewNavigator
  */
-class MultiViewNavigator {
+object MultiViewNavigator {
 
+    private const val DEFAULT_TAG = "tag"
     private val mViewNavigator: LinkedHashMap<String, ViewNavigator> = LinkedHashMap()
-
-    companion object {
-        val instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            MultiViewNavigator()
-        }
-
-        const val DEFAULT_TAG = "tag"
-    }
 
     fun initPaths(paths: ArrayList<NavigatorInfo>) {
         PagePathUtil.init(paths)

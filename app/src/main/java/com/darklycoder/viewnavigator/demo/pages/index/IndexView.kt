@@ -16,10 +16,10 @@ class IndexView(context: Context) : PageView(context) {
         LayoutInflater.from(context).inflate(R.layout.view_page_index, this, true)
         bindContainerView(fl_container)
 
-        btn_main.setOnClickListener { MultiViewNavigator.instance.goto(Paths.PATH_MAIN) }
-        btn_about.setOnClickListener { MultiViewNavigator.instance.goto(Paths.PATH_ABOUT) }
-        btn_close.setOnClickListener { MultiViewNavigator.instance.finish() }
-        btn_close_about.setOnClickListener { MultiViewNavigator.instance.finishByKey(Paths.PATH_ABOUT) }
+        btn_main.setOnClickListener { MultiViewNavigator.goto(Paths.PATH_MAIN) }
+        btn_about.setOnClickListener { MultiViewNavigator.goto(Paths.PATH_ABOUT) }
+        btn_close.setOnClickListener { MultiViewNavigator.finish() }
+        btn_close_about.setOnClickListener { MultiViewNavigator.finishByKey(Paths.PATH_ABOUT) }
     }
 
 }

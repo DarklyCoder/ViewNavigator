@@ -17,7 +17,7 @@ class AboutView(context: Context) : PageView(context) {
         LayoutInflater.from(context).inflate(R.layout.view_page_about, this, true)
         setBackgroundColor(Color.WHITE)
 
-        btn_desc.setOnClickListener { MultiViewNavigator.instance.goto(Paths.PATH_DESC) }
+        btn_desc.setOnClickListener { MultiViewNavigator.goto(Paths.PATH_DESC) }
     }
 
 }

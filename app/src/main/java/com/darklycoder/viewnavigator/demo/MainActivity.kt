@@ -17,34 +17,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(initView)
 
         // 初始化路径
-        MultiViewNavigator.instance.initPaths(ViewPaths.getPaths())
+        MultiViewNavigator.initPaths(ViewPaths.getPaths())
 
         // 添加导航器
-        MultiViewNavigator.instance.add(ViewNavigator(this, initView))
+        MultiViewNavigator.add(ViewNavigator(this, initView))
 
         // 跳转界面
-        MultiViewNavigator.instance.goto(Paths.PATH_INDEX)
+        MultiViewNavigator.goto(Paths.PATH_INDEX)
     }
 
     override fun onBackPressed() {
-        val result = MultiViewNavigator.instance.back(2)
+        val result = MultiViewNavigator.back(2)
         if (!result) {
             super.onBackPressed()
         }
     }
 
     override fun onResume() {
-        MultiViewNavigator.instance.onShow()
+        MultiViewNavigator.onShow()
         super.onResume()
     }
 
     override fun onPause() {
-        MultiViewNavigator.instance.onHide()
+        MultiViewNavigator.onHide()
         super.onPause()
     }
 
     override fun onDestroy() {
-        MultiViewNavigator.instance.finish()
+        MultiViewNavigator.finish()
         super.onDestroy()
     }
 
