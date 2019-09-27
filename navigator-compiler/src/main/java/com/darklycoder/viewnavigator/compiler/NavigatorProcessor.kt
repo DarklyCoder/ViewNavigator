@@ -66,7 +66,9 @@ class NavigatorProcessor : AbstractProcessor() {
         val array = ClassName("kotlin.collections", "ArrayList")
         val listType = array.parameterizedBy(navigatorInfo)
 
-        val builder = FunSpec.builder("getPaths")
+        val builder = FunSpec
+            .builder("getPaths")
+            .addAnnotation(JvmStatic::class)
             .returns(listType)
             .addStatement("val list = %T()", listType)
 
@@ -79,17 +81,15 @@ class NavigatorProcessor : AbstractProcessor() {
             )
         }
 
-        val getPathMap = builder.addStatement("return list").build()
-
-        val companion = TypeSpec.companionObjectBuilder()
-            .addFunction(getPathMap)
+        val getPathMap = builder
+            .addStatement("return list")
             .build()
 
         val file = FileSpec
             .builder(pkgName, clsName)
             .addType(
-                TypeSpec.classBuilder("ViewPaths")
-                    .addType(companion)
+                TypeSpec.objectBuilder("ViewPaths")
+                    .addFunction(getPathMap)
                     .build()
             )
             .build()

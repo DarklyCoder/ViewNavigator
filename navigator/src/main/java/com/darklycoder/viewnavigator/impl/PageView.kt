@@ -9,7 +9,6 @@ import com.darklycoder.viewnavigator.enums.PageStatus
 import com.darklycoder.viewnavigator.info.ViewIntent
 import com.darklycoder.viewnavigator.interfaces.IPageManager
 import com.darklycoder.viewnavigator.interfaces.IPageView
-import com.darklycoder.viewnavigator.interfaces.IParams
 import com.darklycoder.viewnavigator.utils.PagePathUtil
 import com.darklycoder.viewnavigator.utils.VLog
 
@@ -68,18 +67,18 @@ open class PageView @JvmOverloads constructor(
         return deep
     }
 
-    override fun onShow(isInit: Boolean, params: IParams?) {
+    override fun onShow(isInit: Boolean, params: Any?) {
         if (status != PageStatus.SHOW) {
             onOriginShow(isInit, params)
         }
         status = PageStatus.SHOW
 
         if (!isInit) {
-            getTopView()?.second?.onShow(false)
+            getTopView()?.second?.onShow(false, params)
         }
     }
 
-    open fun onOriginShow(isInit: Boolean, params: IParams?) {
+    open fun onOriginShow(isInit: Boolean, params: Any?) {
         VLog.d("onShow: ${javaClass.simpleName}")
     }
 

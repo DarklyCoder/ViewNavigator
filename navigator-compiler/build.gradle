@@ -18,7 +18,7 @@ publish {
     userOrg = 'darklycoder'
     groupId = 'com.darklycoder.lib'
     artifactId = 'ViewNavigator-Compiler'
-    publishVersion = '1.0.3'
+    publishVersion = '1.0.4'
     desc = 'ViewNavigator-Compiler'
     website = 'https://github.com/DarklyCoder/ViewNavigator.git'
 }

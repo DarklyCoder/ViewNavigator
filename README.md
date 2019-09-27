@@ -51,7 +51,7 @@
 
 | 操作  | 函数|
 |---|---|
-|  跳转 |MultiViewNavigator.add(ViewNavigator, TAG) |
+|  添加导航器 |MultiViewNavigator.add(ViewNavigator, TAG) |
 |  跳转 |MultiViewNavigator.jump(Path, TAG) |
 |  跳转 |MultiViewNavigator.jump(ViewIntent, TAG) |
 |  返回 |MultiViewNavigator.back(DEEP, TAG) |
