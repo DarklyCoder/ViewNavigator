@@ -17,7 +17,7 @@ class PageManager : IPageManager {
         this.mPageView = pageView
     }
 
-    override fun goto(intent: ViewIntent) {
+    override fun jump(intent: ViewIntent) {
         val gotoGroup = PagePathUtil.getGroup(intent.path)
         val curGroup = mPageView?.getGroup()
         // 是同一组的
@@ -27,7 +27,7 @@ class PageManager : IPageManager {
         }
 
         // 非同一组
-        mPageView?.goto(gotoGroup, intent)
+        mPageView?.jump(gotoGroup, intent)
     }
 
     private fun handleIntent(intent: ViewIntent) {

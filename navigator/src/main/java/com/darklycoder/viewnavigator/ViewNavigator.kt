@@ -22,15 +22,15 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
     /**
      * 跳转界面
      */
-    fun goto(path: String) {
-        this.goto(ViewIntent(path))
+    fun jump(path: String) {
+        this.jump(ViewIntent(path))
     }
 
     /**
      * 跳转界面
      */
-    fun goto(intent: ViewIntent) {
-        pageView?.getPageManager()?.goto(intent)
+    fun jump(intent: ViewIntent) {
+        pageView?.getPageManager()?.jump(intent)
     }
 
     /**

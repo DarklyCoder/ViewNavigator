@@ -226,10 +226,10 @@ open class PageView @JvmOverloads constructor(
     /**
      * 跳转子界面
      */
-    override fun goto(gotoGroup: String, intent: ViewIntent) {
+    override fun jump(gotoGroup: String, intent: ViewIntent) {
         mPages.reversed().forEach {
             if (gotoGroup.contains(it.first)) {
-                it.second.getPageManager()?.goto(intent)
+                it.second.getPageManager()?.jump(intent)
             }
         }
     }

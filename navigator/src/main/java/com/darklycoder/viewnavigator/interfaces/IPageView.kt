@@ -76,6 +76,6 @@ interface IPageView : ILife {
     /**
      * 跳转子界面
      */
-    fun goto(gotoGroup: String, intent: ViewIntent)
+    fun jump(gotoGroup: String, intent: ViewIntent)
 
 }

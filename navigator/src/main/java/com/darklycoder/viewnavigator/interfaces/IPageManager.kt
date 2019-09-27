@@ -15,6 +15,6 @@ interface IPageManager {
     /**
      * 跳转到新界面
      */
-    fun goto(intent: ViewIntent)
+    fun jump(intent: ViewIntent)
 
 }

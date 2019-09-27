@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         MultiViewNavigator.add(ViewNavigator(this, initView))
 
         // 跳转界面
-        MultiViewNavigator.goto(Paths.PATH_INDEX)
+        MultiViewNavigator.jump(Paths.PATH_INDEX)
     }
 
     override fun onBackPressed() {

@@ -18,9 +18,9 @@ class MainView(context: Context) : PageView(context) {
         bindContainerView(fl_container)
         setBackgroundColor(Color.WHITE)
 
-        btn_main1.setOnClickListener { MultiViewNavigator.goto(Paths.PATH_MAIN01) }
+        btn_main1.setOnClickListener { MultiViewNavigator.jump(Paths.PATH_MAIN01) }
 
-        btn_main2.setOnClickListener { MultiViewNavigator.goto(Paths.PATH_MAIN02) }
+        btn_main2.setOnClickListener { MultiViewNavigator.jump(Paths.PATH_MAIN02) }
     }
 
 }

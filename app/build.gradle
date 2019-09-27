@@ -26,6 +26,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -35,13 +40,13 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
 
-//    implementation 'com.darklycoder.lib:ViewNavigator:1.0.2'
-//    implementation 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
-//    kapt 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
+    implementation 'com.darklycoder.lib:ViewNavigator:1.0.3'
+    implementation 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.3'
+    kapt 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.3'
 
-    // view导航框架
-    implementation project(path: ':navigator')
-    // 注解处理框架
-    implementation project(path: ':navigator-compiler')
-    kapt project(path: ':navigator-compiler')
+//    // view导航框架
+//    implementation project(path: ':navigator')
+//    // 注解处理框架
+//    implementation project(path: ':navigator-compiler')
+//    kapt project(path: ':navigator-compiler')
 }

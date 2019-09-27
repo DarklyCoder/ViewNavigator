@@ -15,9 +15,9 @@
 1. 在 build.gradle 中 添加如下内容：
 
     ``` shell
-    implementation 'com.darklycoder.lib:ViewNavigator:1.0.2'
-    implementation 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
-    kapt 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.1'
+    implementation 'com.darklycoder.lib:ViewNavigator:1.0.3'
+    implementation 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.3'
+    kapt 'com.darklycoder.lib:ViewNavigator-Compiler:1.0.3'
     ```
 
 2. 自定义界面
@@ -52,8 +52,8 @@
 | 操作  | 函数|
 |---|---|
 |  跳转 |MultiViewNavigator.add(ViewNavigator, TAG) |
-|  跳转 |MultiViewNavigator.goto(Path, TAG) |
-|  跳转 |MultiViewNavigator.goto(ViewIntent, TAG) |
+|  跳转 |MultiViewNavigator.jump(Path, TAG) |
+|  跳转 |MultiViewNavigator.jump(ViewIntent, TAG) |
 |  返回 |MultiViewNavigator.back(DEEP, TAG) |
 |  关闭指定界面 |MultiViewNavigator.finishByKey(Path, TAG) |
 |  全部关闭 |MultiViewNavigator.finish(TAG) |

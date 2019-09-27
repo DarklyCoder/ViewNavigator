@@ -15,42 +15,60 @@ object MultiViewNavigator {
     private const val DEFAULT_TAG = "tag"
     private val mViewNavigator: LinkedHashMap<String, ViewNavigator> = LinkedHashMap()
 
+    @JvmStatic
     fun initPaths(paths: ArrayList<NavigatorInfo>) {
         PagePathUtil.init(paths)
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun add(navigator: ViewNavigator, tag: String = DEFAULT_TAG) {
         mViewNavigator[tag] = navigator
     }
 
-    fun goto(pathIndex: String, tag: String = DEFAULT_TAG) {
-        mViewNavigator[tag]?.goto(pathIndex)
+    @JvmStatic
+    @JvmOverloads
+    fun jump(pathIndex: String, tag: String = DEFAULT_TAG) {
+        mViewNavigator[tag]?.jump(pathIndex)
     }
 
-    fun goto(intent: ViewIntent, tag: String = DEFAULT_TAG) {
-        mViewNavigator[tag]?.goto(intent)
+    @JvmStatic
+    @JvmOverloads
+    fun jump(intent: ViewIntent, tag: String = DEFAULT_TAG) {
+        mViewNavigator[tag]?.jump(intent)
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun back(minDeep: Int = 2, tag: String = DEFAULT_TAG): Boolean {
         return mViewNavigator[tag]?.back(minDeep) ?: false
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun onShow(tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.onShow()
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun onHide(tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.onHide()
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun finishByKey(vararg keys: String, tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.finishByKey(*keys)
     }
 
+    @JvmStatic
+    @JvmOverloads
     fun finish(tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.finish()
     }
 
+    @JvmStatic
     fun clear() {
         mViewNavigator.entries.forEach { it.value.finish() }
         mViewNavigator.clear()
