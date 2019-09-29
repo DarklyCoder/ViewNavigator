@@ -7,6 +7,8 @@ class Paths {
 
     companion object {
         const val PATH_INIT = "init"
+
+        const val PATH_DIALOG = "init/dialog"
         const val PATH_DESC = "init/desc"
 
         const val PATH_INDEX = "init/index"

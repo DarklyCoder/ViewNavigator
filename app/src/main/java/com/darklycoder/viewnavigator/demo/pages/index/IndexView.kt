@@ -26,7 +26,10 @@ class IndexView(context: Context) : PageView(context) {
                 )
             )
         }
-        btn_about.setOnClickListener { MultiViewNavigator.jump(Paths.PATH_ABOUT) }
+        btn_about.setOnClickListener {
+            MultiViewNavigator.jump(Paths.PATH_ABOUT)
+            MultiViewNavigator.jump(Paths.PATH_DIALOG)
+        }
         btn_close.setOnClickListener { MultiViewNavigator.finish() }
         btn_close_about.setOnClickListener { MultiViewNavigator.finishByKey(Paths.PATH_ABOUT) }
     }

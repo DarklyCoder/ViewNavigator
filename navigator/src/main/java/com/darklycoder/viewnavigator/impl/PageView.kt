@@ -67,6 +67,13 @@ open class PageView @JvmOverloads constructor(
         return deep
     }
 
+    /**
+     * 获取当前状态
+     */
+    open fun getCurState(): PageStatus {
+        return status
+    }
+
     override fun onShow(isInit: Boolean, params: Any?) {
         if (status != PageStatus.SHOW) {
             onOriginShow(isInit, params)
@@ -79,7 +86,7 @@ open class PageView @JvmOverloads constructor(
     }
 
     open fun onOriginShow(isInit: Boolean, params: Any?) {
-        VLog.d("onShow: ${javaClass.simpleName}")
+        VLog.d("onShow: $isInit ${javaClass.simpleName}")
     }
 
     override fun onHide() {

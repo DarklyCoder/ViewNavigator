@@ -15,7 +15,7 @@ object MultiViewNavigator {
 
     private const val DEFAULT_TAG = "tag"
     private val mViewNavigator: LinkedHashMap<String, ViewNavigator> = LinkedHashMap()
-    private val mPageChangeListener: ArrayList<IPageChange>? = ArrayList()
+    private val mPageChangeListener: ArrayList<IPageChange> = ArrayList()
 
     @JvmStatic
     fun initPaths(paths: ArrayList<NavigatorInfo>) {
@@ -32,6 +32,8 @@ object MultiViewNavigator {
     @JvmOverloads
     fun jump(pathIndex: String, tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.jump(pathIndex)
+
+        notifyChange()
     }
 
     @JvmStatic
@@ -84,15 +86,17 @@ object MultiViewNavigator {
     fun clear() {
         mViewNavigator.entries.forEach { it.value.finish() }
         mViewNavigator.clear()
+
+        mPageChangeListener.clear()
     }
 
     @JvmStatic
     fun addChangeListener(listener: IPageChange) {
-        mPageChangeListener?.add(listener)
+        mPageChangeListener.add(listener)
     }
 
     private fun notifyChange() {
-        mPageChangeListener?.forEach { it.onPageChange() }
+        mPageChangeListener.forEach { it.onPageChange() }
     }
 
 }

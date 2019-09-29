@@ -17,6 +17,8 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
 
     init {
         mContext = WeakReference(context)
+
+        pageView?.onShow(true)
     }
 
     /**
@@ -73,7 +75,7 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
      * 显示
      */
     fun onShow() {
-        pageView?.onShow(false)
+        pageView?.onShow()
     }
 
     /**
