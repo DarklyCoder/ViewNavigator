@@ -2,6 +2,7 @@ package com.darklycoder.viewnavigator
 
 import com.darklycoder.viewnavigator.info.NavigatorInfo
 import com.darklycoder.viewnavigator.info.ViewIntent
+import com.darklycoder.viewnavigator.interfaces.IPageChange
 import com.darklycoder.viewnavigator.utils.PagePathUtil
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -14,6 +15,7 @@ object MultiViewNavigator {
 
     private const val DEFAULT_TAG = "tag"
     private val mViewNavigator: LinkedHashMap<String, ViewNavigator> = LinkedHashMap()
+    private val mPageChangeListener: ArrayList<IPageChange>? = ArrayList()
 
     @JvmStatic
     fun initPaths(paths: ArrayList<NavigatorInfo>) {
@@ -36,12 +38,18 @@ object MultiViewNavigator {
     @JvmOverloads
     fun jump(intent: ViewIntent, tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.jump(intent)
+
+        notifyChange()
     }
 
     @JvmStatic
     @JvmOverloads
     fun back(minDeep: Int = 2, tag: String = DEFAULT_TAG): Boolean {
-        return mViewNavigator[tag]?.back(minDeep) ?: false
+        val result = mViewNavigator[tag]?.back(minDeep) ?: false
+
+        notifyChange()
+
+        return result
     }
 
     @JvmStatic
@@ -60,18 +68,31 @@ object MultiViewNavigator {
     @JvmOverloads
     fun finishByKey(vararg keys: String, tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.finishByKey(*keys)
+
+        notifyChange()
     }
 
     @JvmStatic
     @JvmOverloads
     fun finish(tag: String = DEFAULT_TAG) {
         mViewNavigator[tag]?.finish()
+
+        notifyChange()
     }
 
     @JvmStatic
     fun clear() {
         mViewNavigator.entries.forEach { it.value.finish() }
         mViewNavigator.clear()
+    }
+
+    @JvmStatic
+    fun addChangeListener(listener: IPageChange) {
+        mPageChangeListener?.add(listener)
+    }
+
+    private fun notifyChange() {
+        mPageChangeListener?.forEach { it.onPageChange() }
     }
 
 }
