@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.darklycoder.viewnavigator.enums.Flags
 import com.darklycoder.viewnavigator.enums.PageStatus
+import com.darklycoder.viewnavigator.enums.StartMode
 import com.darklycoder.viewnavigator.info.ViewIntent
-import com.darklycoder.viewnavigator.interfaces.IPageManager
 import com.darklycoder.viewnavigator.interfaces.IPageView
 import com.darklycoder.viewnavigator.utils.PagePathUtil
 import com.darklycoder.viewnavigator.utils.VLog
@@ -32,12 +32,9 @@ open class PageView @JvmOverloads constructor(
     private var mContainerView: ViewGroup? = null
     // 存放 mContainerView 里显示的界面
     private var mPages: ArrayList<Pair<String, IPageView>> = ArrayList()
-    // 管理子界面切换
-    private var mPageManager: IPageManager? = null
 
     override fun bindContainerView(containerView: ViewGroup) {
         this.mContainerView = containerView
-        bindPageManager(PageManager())
     }
 
     override fun getGroup(): String? {
@@ -46,15 +43,6 @@ open class PageView @JvmOverloads constructor(
 
     override fun getContainerView(): ViewGroup? {
         return mContainerView
-    }
-
-    override fun bindPageManager(pageManager: IPageManager) {
-        this.mPageManager = pageManager
-        this.mPageManager?.bindPage(this)
-    }
-
-    override fun getPageManager(): IPageManager? {
-        return mPageManager
     }
 
     override fun getDeep(): Int {
@@ -67,13 +55,6 @@ open class PageView @JvmOverloads constructor(
         return deep
     }
 
-    /**
-     * 获取当前状态
-     */
-    open fun getCurState(): PageStatus {
-        return status
-    }
-
     override fun onShow(isInit: Boolean, params: Any?) {
         if (status != PageStatus.SHOW) {
             onOriginShow(isInit, params)
@@ -83,10 +64,6 @@ open class PageView @JvmOverloads constructor(
         if (!isInit) {
             getTopView()?.second?.onShow(false, params)
         }
-    }
-
-    open fun onOriginShow(isInit: Boolean, params: Any?) {
-        VLog.d("onShow: $isInit ${javaClass.simpleName}")
     }
 
     override fun onHide() {
@@ -114,15 +91,6 @@ open class PageView @JvmOverloads constructor(
         return true
     }
 
-    private fun handleBack() {
-        val last = mPages.last()
-        if (last.second.back()) {
-            return
-        }
-
-        closeItem(last)
-    }
-
     /**
      * 关闭指定界面
      */
@@ -146,6 +114,46 @@ open class PageView @JvmOverloads constructor(
         return false
     }
 
+    /**
+     * 跳转到新界面
+     */
+    override fun jump(intent: ViewIntent) {
+        val gotoGroup = PagePathUtil.getGroup(intent.path)
+        val curGroup = getGroup()
+        // 是同一组的
+        if (gotoGroup == curGroup) {
+            handleIntent(intent)
+            return
+        }
+
+        // 非同一组
+        jump(gotoGroup, intent)
+    }
+
+    //********************************************************//
+
+    /**
+     * 获取当前状态
+     */
+    open fun getCurState(): PageStatus {
+        return status
+    }
+
+    open fun onOriginShow(isInit: Boolean, params: Any?) {
+        VLog.d("onShow: $isInit ${javaClass.simpleName}")
+    }
+
+    //********************************************************//
+
+    private fun handleBack() {
+        val last = mPages.last()
+        if (last.second.back()) {
+            return
+        }
+
+        closeItem(last)
+    }
+
     private fun closeItem(item: Pair<String, IPageView>) {
         try {
             val pageView = item.second
@@ -164,7 +172,7 @@ open class PageView @JvmOverloads constructor(
 
     }
 
-    override fun getTopView(): Pair<String, IPageView?>? {
+    private fun getTopView(): Pair<String, IPageView?>? {
         if (mPages.isNullOrEmpty()) {
             return null
         }
@@ -172,15 +180,15 @@ open class PageView @JvmOverloads constructor(
         return mPages.last()
     }
 
-    override fun contain(intent: ViewIntent): Boolean {
+    private fun contain(intent: ViewIntent): Boolean {
         return null != findPageByPath(intent.path)
     }
 
-    override fun isTop(intent: ViewIntent): Boolean {
+    private fun isTop(intent: ViewIntent): Boolean {
         return contain(intent) && mPages.last().first == intent.path
     }
 
-    override fun moveTop(intent: ViewIntent) {
+    private fun moveTop(intent: ViewIntent) {
         if (intent.flag == Flags.FLAG_CLEAR) {
             // 清除当前操作界面的以外界面
             clearByPath(intent.path)
@@ -207,7 +215,7 @@ open class PageView @JvmOverloads constructor(
         pageView.onShow(false, intent.params)
     }
 
-    override fun addPage(intent: ViewIntent) {
+    private fun addPage(intent: ViewIntent) {
         if (intent.flag == Flags.FLAG_CLEAR) {
             clear()
         }
@@ -232,10 +240,41 @@ open class PageView @JvmOverloads constructor(
     /**
      * 跳转子界面
      */
-    override fun jump(gotoGroup: String, intent: ViewIntent) {
+    private fun jump(gotoGroup: String, intent: ViewIntent) {
         mPages.reversed().forEach {
             if (gotoGroup.contains(it.first)) {
-                it.second.getPageManager()?.jump(intent)
+                it.second.jump(intent)
+            }
+        }
+    }
+
+    private fun handleIntent(intent: ViewIntent) {
+        // 判断如何跳转
+        val navigatorInfo = PagePathUtil.getNavigatorInfo(intent.path)
+        when (StartMode.findType(navigatorInfo?.startMode)) {
+            StartMode.Standard -> {
+                // 每次都跳转到新界面
+                addPage(intent)
+            }
+
+            StartMode.SingleTask -> {
+                // 如果栈中有此界面，则移到栈顶，否则，新建界面
+                if (contain(intent)) {
+                    moveTop(intent)
+                    return
+                }
+
+                addPage(intent)
+            }
+
+            StartMode.SingleTop -> {
+                // 如果有栈中有此界面，且在栈顶，不再显示，否则，新建界面
+                if (isTop(intent)) {
+                    moveTop(intent)
+                    return
+                }
+
+                addPage(intent)
             }
         }
     }

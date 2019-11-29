@@ -24,16 +24,6 @@ interface IPageView : ILife {
     fun getContainerView(): ViewGroup?
 
     /**
-     * 绑定界面管理器
-     */
-    fun bindPageManager(pageManager: IPageManager)
-
-    /**
-     * 获取界面管理器
-     */
-    fun getPageManager(): IPageManager?
-
-    /**
      * 获取视图层级
      */
     fun getDeep(): Int
@@ -49,33 +39,8 @@ interface IPageView : ILife {
     fun finishByKey(key: String): Boolean
 
     /**
-     * 获取当前最上面的视图
+     * 跳转到新界面
      */
-    fun getTopView(): Pair<String, IPageView?>?
-
-    /**
-     * 是否含有此次界面
-     */
-    fun contain(intent: ViewIntent): Boolean
-
-    /**
-     * 是否是栈顶
-     */
-    fun isTop(intent: ViewIntent): Boolean
-
-    /**
-     * 移动至栈顶
-     */
-    fun moveTop(intent: ViewIntent)
-
-    /**
-     * 添加界面
-     */
-    fun addPage(intent: ViewIntent)
-
-    /**
-     * 跳转子界面
-     */
-    fun jump(gotoGroup: String, intent: ViewIntent)
+    fun jump(intent: ViewIntent)
 
 }

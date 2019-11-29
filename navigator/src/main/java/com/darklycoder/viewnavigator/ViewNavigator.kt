@@ -32,7 +32,7 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
      * 跳转界面
      */
     fun jump(intent: ViewIntent) {
-        pageView?.getPageManager()?.jump(intent)
+        pageView?.jump(intent)
     }
 
     /**
