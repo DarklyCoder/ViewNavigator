@@ -56,9 +56,18 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
      * 根据key关闭指定界面
      */
     fun finishByKey(vararg keys: String) {
-        keys.forEach { pageView?.finishByKey(it) }
+        var viewIntent: ViewIntent? = null
+        keys.forEach {
+            viewIntent = pageView?.finishByKey(it)
+        }
 
         pageView?.onShow()
+
+        val intent = viewIntent
+
+        if (null != intent && -1 != intent.requestCode) {
+            pageView?.onResult(intent.requestCode, intent.resultCode, intent)
+        }
     }
 
     /**
@@ -83,6 +92,14 @@ class ViewNavigator(context: Context, private var pageView: IPageView?) {
      */
     fun onHide() {
         pageView?.onHide()
+    }
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        pageView?.onPermissionResult(requestCode, permissions, grantResults)
     }
 
 }

@@ -19,12 +19,9 @@ class IndexView(context: Context) : PageView(context) {
         bindContainerView(fl_container)
 
         btn_main.setOnClickListener {
-            MultiViewNavigator.jump(
-                ViewIntent(
-                    Paths.PATH_MAIN,
-                    DataParam(1)
-                )
-            )
+            MultiViewNavigator.jump(ViewIntent.newIntent(Paths.PATH_MAIN) {
+                params = DataParam(1)
+            })
         }
         btn_about.setOnClickListener {
             MultiViewNavigator.jump(Paths.PATH_ABOUT)

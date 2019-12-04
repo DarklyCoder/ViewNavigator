@@ -95,6 +95,21 @@ object MultiViewNavigator {
         mPageChangeListener.add(listener)
     }
 
+    @JvmStatic
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        mViewNavigator.entries.forEach {
+            it.value.onRequestPermissionsResult(
+                requestCode,
+                permissions,
+                grantResults
+            )
+        }
+    }
+
     private fun notifyChange() {
         mPageChangeListener.forEach { it.onPageChange() }
     }

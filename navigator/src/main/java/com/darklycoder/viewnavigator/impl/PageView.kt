@@ -1,6 +1,7 @@
 package com.darklycoder.viewnavigator.impl
 
 import android.content.Context
+import android.os.Bundle
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -32,17 +33,10 @@ open class PageView @JvmOverloads constructor(
     private var mContainerView: ViewGroup? = null
     // 存放 mContainerView 里显示的界面
     private var mPages: ArrayList<Pair<String, IPageView>> = ArrayList()
+    private var mIntent: ViewIntent? = null
 
     override fun bindContainerView(containerView: ViewGroup) {
         this.mContainerView = containerView
-    }
-
-    override fun getGroup(): String? {
-        return PagePathUtil.findGroup(javaClass.name, null != mContainerView)
-    }
-
-    override fun getContainerView(): ViewGroup? {
-        return mContainerView
     }
 
     override fun getDeep(): Int {
@@ -55,14 +49,19 @@ open class PageView @JvmOverloads constructor(
         return deep
     }
 
-    override fun onShow(isInit: Boolean, params: Any?) {
+    override fun getIntent(): ViewIntent? {
+        return mIntent
+    }
+
+    override fun onShow(isInit: Boolean, intent: ViewIntent?) {
+        this.mIntent = intent
         if (status != PageStatus.SHOW) {
-            onOriginShow(isInit, params)
+            onOriginShow(isInit, intent?.params)
         }
         status = PageStatus.SHOW
 
         if (!isInit) {
-            getTopView()?.second?.onShow(false, params)
+            getTopView()?.second?.onShow(false, intent)
         }
     }
 
@@ -73,10 +72,27 @@ open class PageView @JvmOverloads constructor(
     }
 
     override fun onRemove() {
-        status = PageStatus.REMOVE
+        status = PageStatus.UNKNOWN
         // 清空子界面
         VLog.d("onRemove: ${javaClass.simpleName}")
         clear()
+    }
+
+    override fun onResult(requestCode: Int, resultCode: Int, intent: ViewIntent?) {
+        VLog.d("onResult: ${javaClass.simpleName}")
+
+        mPages.reversed().forEach { it.second.onResult(requestCode, resultCode, intent) }
+    }
+
+    override fun onPermissionResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        VLog.d("onPermissionResult: ${javaClass.simpleName}")
+
+        mPages.reversed()
+            .forEach { it.second.onPermissionResult(requestCode, permissions, grantResults) }
     }
 
     /**
@@ -94,24 +110,25 @@ open class PageView @JvmOverloads constructor(
     /**
      * 关闭指定界面
      */
-    override fun finishByKey(key: String): Boolean {
+    override fun finishByKey(key: String): ViewIntent? {
         if (mPages.isNullOrEmpty()) {
-            return false
+            return null
         }
 
         mPages.reversed().forEach {
             if (key == it.first) {
                 closeItem(it)
-                return true
+                return it.second.getIntent()
 
             } else {
-                if (it.second.finishByKey(key)) {
-                    return true
+                val intent = it.second.finishByKey(key)
+                if (null != intent) {
+                    return intent
                 }
             }
         }
 
-        return false
+        return null
     }
 
     /**
@@ -143,7 +160,20 @@ open class PageView @JvmOverloads constructor(
         VLog.d("onShow: $isInit ${javaClass.simpleName}")
     }
 
+    fun setOnResult(resultCode: Int, bundle: Bundle? = null) {
+        mIntent?.resultCode = resultCode
+        mIntent?.result = bundle
+    }
+
     //********************************************************//
+
+    private fun getGroup(): String? {
+        return PagePathUtil.findGroup(javaClass.name, null != getContainerView())
+    }
+
+    private fun getContainerView(): ViewGroup? {
+        return mContainerView
+    }
 
     private fun handleBack() {
         val last = mPages.last()
@@ -169,7 +199,6 @@ open class PageView @JvmOverloads constructor(
         } catch (e: Exception) {
             VLog.e(e)
         }
-
     }
 
     private fun getTopView(): Pair<String, IPageView?>? {
@@ -197,7 +226,7 @@ open class PageView @JvmOverloads constructor(
         val topView = getTopView()
         if (topView?.first == intent.path) {
             // 当前界面已在栈顶
-            topView.second?.onShow(false, intent.params)
+            topView.second?.onShow(false, intent)
             return
         }
 
@@ -212,7 +241,7 @@ open class PageView @JvmOverloads constructor(
         }
 
         topView?.second?.onHide()
-        pageView.onShow(false, intent.params)
+        pageView.onShow(false, intent)
     }
 
     private fun addPage(intent: ViewIntent) {
@@ -230,7 +259,7 @@ open class PageView @JvmOverloads constructor(
             getContainerView()?.addView(pageView)
             VLog.d("addPage: ${javaClass.simpleName} -> ${pageView::class.java.simpleName}")
 
-            pageView.onShow(true, intent.params)
+            pageView.onShow(true, intent)
 
         } catch (e: Exception) {
             VLog.e(e)

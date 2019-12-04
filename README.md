@@ -60,6 +60,13 @@
 |  显示 |MultiViewNavigator.onShow(TAG) |
 |  隐藏 |MultiViewNavigator.onHide(TAG) |
 
+## TODO 
+ 
+* 动画处理
+* 手势处理
+* ViewModel支持
+* 老项目兼容
+
 ## Demo
 
 参考示例代码[app](https://github.com/DarklyCoder/ViewNavigator/tree/master/app)

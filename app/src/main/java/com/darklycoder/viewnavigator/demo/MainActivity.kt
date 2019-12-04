@@ -48,4 +48,14 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        MultiViewNavigator.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
 }

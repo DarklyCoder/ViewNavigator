@@ -14,19 +14,21 @@ interface IPageView : ILife {
     fun bindContainerView(containerView: ViewGroup)
 
     /**
-     * 获取所属分组
-     */
-    fun getGroup(): String?
-
-    /**
-     * 获取绑定的子容器视图
-     */
-    fun getContainerView(): ViewGroup?
-
-    /**
      * 获取视图层级
      */
     fun getDeep(): Int
+
+    fun getIntent(): ViewIntent?
+
+    /**
+     * 请求数据回调
+     */
+    fun onResult(requestCode: Int, resultCode: Int, intent: ViewIntent? = null)
+
+    /**
+     * 请求权限回调
+     */
+    fun onPermissionResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
 
     /**
      * 返回
@@ -36,7 +38,7 @@ interface IPageView : ILife {
     /**
      * 关闭指定界面
      */
-    fun finishByKey(key: String): Boolean
+    fun finishByKey(key: String): ViewIntent?
 
     /**
      * 跳转到新界面
