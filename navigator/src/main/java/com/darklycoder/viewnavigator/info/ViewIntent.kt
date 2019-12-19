@@ -1,6 +1,9 @@
 package com.darklycoder.viewnavigator.info
 
+import android.animation.AnimatorInflater
+import android.content.Context
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import com.darklycoder.viewnavigator.animation.AnimationInfo
 import com.darklycoder.viewnavigator.enums.Flags
 
@@ -29,6 +32,18 @@ class ViewIntent(
 
             return intent
         }
+    }
+
+    fun loadAnimation(context: Context, resId: Int): AnimationInfo {
+        val info = AnimationInfo()
+        info.animation = AnimationUtils.loadAnimation(context, resId)
+        return info
+    }
+
+    fun loadAnimator(context: Context, resId: Int): AnimationInfo {
+        val info = AnimationInfo()
+        info.animator = AnimatorInflater.loadAnimator(context, resId)
+        return info
     }
 
 }

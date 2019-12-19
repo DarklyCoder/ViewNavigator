@@ -25,6 +25,8 @@ class AboutView(context: Context) : PageView(context) {
         btn_desc.setOnClickListener {
             MultiViewNavigator.jump(ViewIntent.newIntent(Paths.PATH_DESC) {
                 requestCode = 666
+                animationInfo = loadAnimation(context, R.anim.slide_in_from_right)
+//                animationInfo = loadAnimator(context, R.animator.change_slide)
             })
         }
     }

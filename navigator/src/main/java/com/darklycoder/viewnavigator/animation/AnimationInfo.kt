@@ -1,7 +1,9 @@
 package com.darklycoder.viewnavigator.animation
 
 import android.animation.Animator
+import android.content.Context
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 
 /**
  * 动画信息
@@ -18,5 +20,9 @@ class AnimationInfo {
             animation.apply(init)
             return animation
         }
+    }
+
+    fun valid(): Boolean {
+        return null != animation || null != animator
     }
 }

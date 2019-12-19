@@ -10,6 +10,7 @@ import com.darklycoder.viewnavigator.enums.PageStatus
 import com.darklycoder.viewnavigator.enums.StartMode
 import com.darklycoder.viewnavigator.info.ViewIntent
 import com.darklycoder.viewnavigator.interfaces.IPageView
+import com.darklycoder.viewnavigator.animation.AnimUtils
 import com.darklycoder.viewnavigator.utils.PagePathUtil
 import com.darklycoder.viewnavigator.utils.VLog
 
@@ -254,12 +255,12 @@ open class PageView @JvmOverloads constructor(
         mPages.add(Pair(intent.path, pageView))
 
         try {
-            // TODO 动画处理
             topView?.second?.onHide()
             getContainerView()?.addView(pageView)
             VLog.d("addPage: ${javaClass.simpleName} -> ${pageView::class.java.simpleName}")
 
-            pageView.onShow(true, intent)
+            // 动画处理
+            AnimUtils.runAnim(intent.animationInfo, pageView) { pageView.onShow(true, intent) }
 
         } catch (e: Exception) {
             VLog.e(e)
