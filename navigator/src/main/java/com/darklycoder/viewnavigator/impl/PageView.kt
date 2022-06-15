@@ -32,6 +32,7 @@ open class PageView @JvmOverloads constructor(
 
     // 存放子界面
     private var mContainerView: ViewGroup? = null
+
     // 存放 mContainerView 里显示的界面
     private var mPages: ArrayList<Pair<String, IPageView>> = ArrayList()
     private var mIntent: ViewIntent? = null
@@ -158,7 +159,7 @@ open class PageView @JvmOverloads constructor(
     }
 
     open fun onOriginShow(isInit: Boolean, params: Any?) {
-        VLog.d("onShow: $isInit ${javaClass.simpleName}")
+        VLog.d("onShow-> isInit: $isInit, ${javaClass.simpleName}")
     }
 
     fun setOnResult(resultCode: Int, bundle: Bundle? = null) {

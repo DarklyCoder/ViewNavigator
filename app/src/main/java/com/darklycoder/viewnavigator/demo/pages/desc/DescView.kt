@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import com.darklycoder.viewnavigator.MultiViewNavigator
 import com.darklycoder.viewnavigator.annotation.Navigator
+import com.darklycoder.viewnavigator.demo.DataParam
 import com.darklycoder.viewnavigator.demo.R
 import com.darklycoder.viewnavigator.demo.pages.Paths
 import com.darklycoder.viewnavigator.impl.PageView
@@ -25,6 +26,15 @@ class DescView(context: Context) : PageView(context) {
             setOnResult(0, bundle)
 
             MultiViewNavigator.finishByKey(Paths.PATH_DESC)
+        }
+    }
+
+    override fun onOriginShow(isInit: Boolean, params: Any?) {
+        super.onOriginShow(isInit, params)
+        if (isInit) {
+            if (params is DataParam) {
+                tv_desc.text = params.desc
+            }
         }
     }
 }
